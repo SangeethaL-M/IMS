@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aju Store | Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #000000; }
+        .sidebar-link { transition: all 0.2s; color: #000000; font-weight: 700; padding: 14px; border-radius: 16px; display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .sidebar-link.active { background: #10b981; color: white !important; }
+        .refined-text { color: #000000 !important; font-weight: 500; }
+        .bold-text { color: #000000 !important; font-weight: 700; }
+        .head-black { color: #000000 !important; font-weight: 800; text-transform: uppercase; }
+    </style>
+</head>
+<body class="flex min-h-screen">
+    <aside class="w-72 bg-white border-r p-6 flex flex-col gap-2 shrink-0">
+        <div class="flex items-center gap-3 mb-10 px-2">
+            <div class="bg-emerald-500 w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-lg"><i class="bi bi-shop"></i></div>
+            <h1 class="font-extrabold text-xl head-black">Aju Store</h1>
+        </div>
+        <nav class="flex flex-col gap-2">
+            <a href="index.html" class="sidebar-link"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <a href="expiry.html" class="sidebar-link"><i class="bi bi-calendar3"></i> All Expiry</a>
+            <a href="near-expiry.html" class="sidebar-link"><i class="bi bi-hourglass-split"></i> Near Expiry</a>
+            <a href="suppliers.html" class="sidebar-link"><i class="bi bi-truck"></i> Suppliers</a>
+            <a href="results.html" class="sidebar-link active"><i class="bi bi-file-earmark-bar-graph"></i> Results</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-8 space-y-8">
+        <header class="flex justify-between items-center">
+            <h2 class="text-4xl font-black head-black">Inventory Results</h2>
+            <div class="flex gap-4">
+                <button onclick="exportCSV()" class="bg-white border-2 border-slate-200 text-black px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-50">
+                    <i class="bi bi-file-earmark-excel text-emerald-600"></i> Download Excel
+                </button>
+                <button onclick="exportPDF()" class="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2">
+                    <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                </button>
+            </div>
+        </header>
+
+        <div class="bg-white p-6 rounded-[2.5rem] border-2 border-slate-100 flex items-center gap-6">
+            <label class="font-black text-xs uppercase text-slate-400">Filter By:</label>
+            <select id="categoryFilter" onchange="filterResults()" class="bg-slate-50 border-2 border-slate-100 p-3 rounded-xl font-bold text-black min-w-[200px]">
+                <option value="All">All Categories</option>
+                <option value="Grocery">Grocery</option>
+                <option value="Dairy">Dairy</option>
+                <option value="Beverages">Beverages</option>
+                <option value="Cleaning">Cleaning</option>
+                <option value="Snacks">Snacks</option>
+            </select>
+        </div>
+
+        <div class="bg-white rounded-[3rem] border-2 border-slate-100 overflow-hidden shadow-md">
+            <table class="w-full text-left" id="reportTable">
+                <thead class="bg-slate-50 border-b-2 border-slate-100">
+                    <tr class="text-[11px] head-black">
+                        <th class="p-6">Invoice #</th>
+                        <th class="p-6">SKU</th>
+                        <th class="p-6">Name</th>
+                        <th class="p-6">Category</th>
+                        <th class="p-6">Qty</th>
+                        <th class="p-6">Price</th>
+                        <th class="p-6">Total</th>
+                        <th class="p-6">EXP Date</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const DB_KEY = 'AJU_STORES_FINAL_SYSTEM';
+        let inventory = JSON.parse(localStorage.getItem(DB_KEY)) || [];
+
+        function render(data) {
+            document.getElementById('resultsBody').innerHTML = data.map(i => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-6 bold-text font-mono text-sm">${i.invoice}</td>
+                    <td class="p-6 refined-text">#${i.sku}</td>
+                    <td class="p-6 bold-text text-lg">${i.name}</td>
+                    <td class="p-6"><span class="px-3 py-1 bg-black text-white rounded-full text-[9px] font-black uppercase">${i.cat}</span></td>
+                    <td class="p-6 refined-text">${i.qty} ${i.unit || 'pcs'}</td>
+                    <td class="p-6 bold-text">₹${i.price}</td>
+                    <td class="p-6 bold-text text-emerald-600">₹${i.price * i.qty}</td>
+                    <td class="p-6 refined-text font-bold">${i.exp}</td>
+                </tr>`).join('');
+        }
+
+        function filterResults() {
+            const cat = document.getElementById('categoryFilter').value;
+            const filtered = cat === "All" ? inventory : inventory.filter(i => i.cat === cat);
+            render(filtered);
+        }
+
+        function exportCSV() {
+            const cat = document.getElementById('categoryFilter').value;
+            const dataToExport = cat === "All" ? inventory : inventory.filter(i => i.cat === cat);
+            
+            // 1. ADD THE BOM (Byte Order Mark) for Excel UTF-8 Support
+            let csvContent = "\uFEFF"; 
+            csvContent += "Invoice #,SKU,Name,Category,Quantity,Price,Total,Expiry\n";
+            
+            dataToExport.forEach(i => {
+                const row = [i.invoice, i.sku, i.name, i.cat, i.qty, i.price, (i.price * i.qty), i.exp].join(",");
+                csvContent += row + "\n";
+            });
+
+            // 2. CREATE BLOB with correct MIME type
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Aju_Report_${cat}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            doc.text(`Aju Store Inventory Report`, 14, 15);
+            doc.autoTable({ html: '#reportTable', startY: 20, theme: 'grid' });
+            doc.save("Aju_Report.pdf");
+        }
+
+        window.onload = () => render(inventory);
+    </script>
+</body>
+</html>

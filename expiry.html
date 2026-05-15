@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aju Store | All Expiry</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #000000; }
+        .sidebar-link { transition: all 0.2s; color: #000000; font-weight: 700; padding: 14px; border-radius: 16px; display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .sidebar-link.active { background: #10b981; color: white !important; box-shadow: 0 10px 15px rgba(16,185,129,0.2); }
+        .refined-text { color: #000000 !important; font-weight: 500; }
+        .bold-text { color: #000000 !important; font-weight: 700; }
+        .head-black { color: #000000 !important; font-weight: 800; text-transform: uppercase; }
+    </style>
+</head>
+<body class="flex min-h-screen">
+    <aside class="w-72 bg-white border-r p-6 flex flex-col gap-2 shrink-0">
+        <div class="flex items-center gap-3 mb-10 px-2">
+            <div class="bg-emerald-500 w-10 h-10 rounded-2xl flex items-center justify-center text-white"><i class="bi bi-shop"></i></div>
+            <h1 class="font-extrabold text-xl head-black">Aju Store</h1>
+        </div>
+        <nav class="flex flex-col gap-2">
+            <a href="index.html" class="sidebar-link"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <a href="expiry.html" class="sidebar-link active"><i class="bi bi-calendar3"></i> All Expiry</a>
+            <a href="near-expiry.html" class="sidebar-link"><i class="bi bi-hourglass-split"></i> Near Expiry</a>
+            <a href="suppliers.html" class="sidebar-link"><i class="bi bi-truck"></i> Suppliers</a>
+            <a href="results.html" class="sidebar-link"><i class="bi bi-file-earmark-bar-graph"></i> Results</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-8 space-y-8">
+        <header class="flex justify-between items-center">
+            <h2 class="text-4xl font-black head-black">All Expiry Report</h2>
+            <div class="bg-white border-2 border-slate-200 px-5 py-3 rounded-2xl flex items-center gap-3 w-80 shadow-sm">
+                <i class="bi bi-search text-black"></i>
+                <input type="text" id="expirySearch" onkeyup="filterExpiry()" placeholder="Search items..." class="bg-transparent outline-none w-full text-black font-medium">
+            </div>
+        </header>
+
+        <div class="bg-white rounded-[3rem] border-2 border-slate-100 overflow-hidden shadow-md">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b-2 border-slate-100">
+                    <tr class="text-[11px] head-black">
+                        <th class="p-6">Invoice #</th>
+                        <th class="p-6">Name</th>
+                        <th class="p-6">Category</th>
+                        <th class="p-6">Stock</th>
+                        <th class="p-6">Price</th>
+                        <th class="p-6">MFG Date</th>
+                        <th class="p-6">EXP Date</th>
+                        <th class="p-6">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="expiryTable" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const DB_NAME = 'AJU_STORES_FINAL_SYSTEM';
+        let inventory = JSON.parse(localStorage.getItem(DB_NAME)) || [];
+
+        function renderExpiry() {
+            const table = document.getElementById('expiryTable');
+            const today = new Date();
+            
+            // SORTING: Closest expiry first
+            const sortedData = [...inventory].sort((a, b) => new Date(a.exp) - new Date(b.exp));
+
+            table.innerHTML = sortedData.map(item => {
+                const expDate = new Date(item.exp);
+                const isExpired = expDate < today;
+                
+                return `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="p-6 bold-text font-mono text-sm">${item.invoice}</td>
+                    <td class="p-6 bold-text text-lg">${item.name}</td>
+                    <td class="p-6"><span class="px-3 py-1 bg-black text-white rounded-full text-[9px] font-black uppercase">${item.cat}</span></td>
+                    <td class="p-6 refined-text">${item.qty} ${item.unit || 'pcs'}</td>
+                    <td class="p-6 bold-text">₹${item.price}</td>
+                    <td class="p-6 refined-text">${item.mfg || '2026-04-01'}</td>
+                    <td class="p-6 bold-text ${isExpired ? 'text-red-600' : 'text-slate-600'}">${item.exp}</td>
+                    <td class="p-6">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${isExpired ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'}">
+                            ${isExpired ? 'Expired' : 'Active'}
+                        </span>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function filterExpiry() {
+            const val = document.getElementById('expirySearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#expiryTable tr');
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
+            });
+        }
+
+        window.onload = renderExpiry;
+    </script>
+</body>
+</html>

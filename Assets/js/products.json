@@ -1,0 +1,36 @@
+{
+  "products": [
+    {"sku":"1001","name":"Basmati Rice","cat":"Grocery","qty":50,"unit":"kg","price":85,"mfg":"2026-01-10","exp":"2026-10-15","supp":"Aju Wholesale"},
+    {"sku":"1002","name":"Wheat Flour","cat":"Grocery","qty":30,"unit":"kg","price":45,"mfg":"2026-02-15","exp":"2026-11-15","supp":"Aju Wholesale"},
+    {"sku":"1003","name":"Toor Dal","cat":"Grocery","qty":20,"unit":"kg","price":140,"mfg":"2026-03-01","exp":"2027-03-01","supp":"Aju Wholesale"},
+    {"sku":"1004","name":"Sugar","cat":"Grocery","qty":100,"unit":"kg","price":42,"mfg":"2026-01-20","exp":"2028-01-20","supp":"Aju Wholesale"},
+    {"sku":"1005","name":"Sunflower Oil","cat":"Grocery","qty":40,"unit":"L","price":110,"mfg":"2026-04-10","exp":"2027-04-10","supp":"Aju Wholesale"},
+    {"sku":"1006","name":"Fresh Milk","cat":"Dairy","qty":12,"unit":"L","price":60,"mfg":"2026-05-10","exp":"2026-05-25","supp":"Dairy Fresh Co"},
+    {"sku":"1007","name":"Salted Butter","cat":"Dairy","qty":15,"unit":"pcs","price":55,"mfg":"2026-04-05","exp":"2026-06-05","supp":"Dairy Fresh Co"},
+    {"sku":"1008","name":"Paneer","cat":"Dairy","qty":10,"unit":"kg","price":350,"mfg":"2026-05-12","exp":"2026-05-28","supp":"Dairy Fresh Co"},
+    {"sku":"1009","name":"Cheddar Cheese","cat":"Dairy","qty":8,"unit":"pcs","price":210,"mfg":"2026-03-10","exp":"2026-09-10","supp":"Dairy Fresh Co"},
+    {"sku":"1010","name":"Greek Yogurt","cat":"Dairy","qty":20,"unit":"pcs","price":45,"mfg":"2026-05-01","exp":"2026-06-10","supp":"Dairy Fresh Co"},
+    {"sku":"1011","name":"Orange Juice","cat":"Beverages","qty":25,"unit":"L","price":110,"mfg":"2026-04-01","exp":"2026-06-15","supp":"Drink It Ltd"},
+    {"sku":"1012","name":"Green Tea","cat":"Beverages","qty":30,"unit":"box","price":250,"mfg":"2026-01-15","exp":"2027-01-15","supp":"Drink It Ltd"},
+    {"sku":"1013","name":"Instant Coffee","cat":"Beverages","qty":15,"unit":"pcs","price":400,"mfg":"2026-02-10","exp":"2028-02-10","supp":"Drink It Ltd"},
+    {"sku":"1014","name":"Mineral Water","cat":"Beverages","qty":100,"unit":"L","price":20,"mfg":"2026-05-01","exp":"2027-05-01","supp":"Drink It Ltd"},
+    {"sku":"1015","name":"Cola Soda","cat":"Beverages","qty":48,"unit":"pcs","price":35,"mfg":"2026-04-20","exp":"2026-10-20","supp":"Drink It Ltd"},
+    {"sku":"1016","name":"Floor Cleaner","cat":"Cleaning","qty":10,"unit":"L","price":180,"mfg":"2026-01-10","exp":"2028-01-10","supp":"Clean Masters"},
+    {"sku":"1017","name":"Dish Soap","cat":"Cleaning","qty":20,"unit":"pcs","price":45,"mfg":"2026-03-01","exp":"2027-03-01","supp":"Clean Masters"},
+    {"sku":"1018","name":"Detergent","cat":"Cleaning","qty":15,"unit":"kg","price":220,"mfg":"2026-02-20","exp":"2028-02-20","supp":"Clean Masters"},
+    {"sku":"1019","name":"Glass Cleaner","cat":"Cleaning","qty":5,"unit":"pcs","price":95,"mfg":"2026-04-15","exp":"2027-04-15","supp":"Clean Masters"},
+    {"sku":"1020","name":"Toilet Cleaner","cat":"Cleaning","qty":12,"unit":"pcs","price":110,"mfg":"2026-01-05","exp":"2027-01-05","supp":"Clean Masters"},
+    {"sku":"1021","name":"Potato Chips","cat":"Snacks","qty":40,"unit":"pcs","price":20,"mfg":"2026-04-10","exp":"2026-07-10","supp":"Snack Nation"},
+    {"sku":"1022","name":"Chocolate Bar","cat":"Snacks","qty":60,"unit":"pcs","price":40,"mfg":"2026-05-01","exp":"2027-05-01","supp":"Snack Nation"},
+    {"sku":"1023","name":"Roasted Cashews","cat":"Snacks","qty":15,"unit":"box","price":350,"mfg":"2026-03-20","exp":"2026-11-20","supp":"Snack Nation"},
+    {"sku":"1024","name":"Salted Peanuts","cat":"Snacks","qty":25,"unit":"pcs","price":30,"mfg":"2026-04-15","exp":"2026-10-15","supp":"Snack Nation"},
+    {"sku":"1025","name":"Biscuits","cat":"Snacks","qty":80,"unit":"pcs","price":10,"mfg":"2026-05-05","exp":"2026-11-05","supp":"Snack Nation"}
+  ],
+  "suppliers": [
+    {"name":"Aju Wholesale","contact":"9876543210","email":"sales@aju.com","invoice":"INV-9901","date":"2026-05-01","val":"₹12,450"},
+    {"name":"Dairy Fresh Co","contact":"9876543211","email":"milk@dairy.com","invoice":"INV-8802","date":"2026-05-05","val":"₹5,800"},
+    {"name":"Drink It Ltd","contact":"9876543212","email":"orders@drinks.com","invoice":"INV-7703","date":"2026-05-08","val":"₹9,200"},
+    {"name":"Clean Masters","contact":"9876543213","email":"pro@clean.com","invoice":"INV-6604","date":"2026-05-10","val":"₹4,500"},
+    {"name":"Snack Nation","contact":"9876543214","email":"hello@snacks.com","invoice":"INV-5505","date":"2026-05-12","val":"₹3,100"}
+  ]
+}

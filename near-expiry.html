@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aju Store | Near Expiry</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #000000; }
+        .sidebar-link { transition: all 0.2s; color: #000000; font-weight: 700; padding: 14px; border-radius: 16px; display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .sidebar-link.active { background: #10b981; color: white !important; box-shadow: 0 10px 15px rgba(245,158,11,0.2); }
+        .refined-text { color: #000000 !important; font-weight: 500; }
+        .bold-text { color: #000000 !important; font-weight: 700; }
+        .head-black { color: #000000 !important; font-weight: 800; text-transform: uppercase; }
+    </style>
+</head>
+<body class="flex min-h-screen">
+    <aside class="w-72 bg-white border-r p-6 flex flex-col gap-2 shrink-0">
+        <div class="flex items-center gap-3 mb-10 px-2">
+            <div class="bg-emerald-500 w-10 h-10 rounded-2xl flex items-center justify-center text-white"><i class="bi bi-shop"></i></div>
+            <h1 class="font-extrabold text-xl head-black">Aju Store</h1>
+        </div>
+        <nav class="flex flex-col gap-2">
+            <a href="index.html" class="sidebar-link"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <a href="expiry.html" class="sidebar-link"><i class="bi bi-calendar3"></i> All Expiry</a>
+            <a href="near-expiry.html" class="sidebar-link active"><i class="bi bi-hourglass-split"></i> Near Expiry</a>
+            <a href="suppliers.html" class="sidebar-link"><i class="bi bi-truck"></i> Suppliers</a>
+            <a href="results.html" class="sidebar-link"><i class="bi bi-file-earmark-bar-graph"></i> Results</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-8 space-y-8">
+        <header>
+            <h2 class="text-4xl font-black head-black">Critical: Near Expiry</h2>
+            <p class="text-slate-500 font-bold mt-2">Showing items expiring within the next 60 days.</p>
+        </header>
+
+        <div class="bg-white rounded-[3rem] border-2 border-slate-100 overflow-hidden shadow-md">
+            <table class="w-full text-left">
+                <thead class="bg-amber-50 border-b-2 border-slate-100">
+                    <tr class="text-[11px] head-black">
+                        <th class="p-6">Invoice #</th>
+                        <th class="p-6">Name</th>
+                        <th class="p-6">Category</th>
+                        <th class="p-6">Stock</th>
+                        <th class="p-6">EXP Date</th>
+                        <th class="p-6">Days Left</th>
+                    </tr>
+                </thead>
+                <tbody id="nearExpiryTable" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const DB_NAME = 'AJU_STORES_FINAL_SYSTEM';
+        let inventory = JSON.parse(localStorage.getItem(DB_NAME)) || [];
+
+        function renderNearExpiry() {
+            const table = document.getElementById('nearExpiryTable');
+            const today = new Date();
+            
+            // Filter: (Exp Date - Today) <= 60 days AND not already expired
+            const filtered = inventory.filter(item => {
+                const expDate = new Date(item.exp);
+                const diffTime = expDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return diffDays <= 60 && diffDays > 0;
+            });
+
+            table.innerHTML = filtered.map(item => {
+                const diffDays = Math.ceil((new Date(item.exp) - today) / (1000 * 60 * 60 * 24));
+                return `
+                <tr class="hover:bg-amber-50/30 transition-colors">
+                    <td class="p-6 bold-text font-mono text-sm">${item.invoice}</td>
+                    <td class="p-6 bold-text text-lg">${item.name}</td>
+                    <td class="p-6"><span class="px-3 py-1 bg-black text-white rounded-full text-[9px] font-black uppercase">${item.cat}</span></td>
+                    <td class="p-6 refined-text">${item.qty} ${item.unit || 'pcs'}</td>
+                    <td class="p-6 bold-text text-amber-600">${item.exp}</td>
+                    <td class="p-6 font-black text-amber-700">${diffDays} Days</td>
+                </tr>`;
+            }).join('');
+
+            if(filtered.length === 0) {
+                table.innerHTML = `<tr><td colspan="6" class="p-20 text-center font-bold text-slate-400">No items expiring in the next 60 days.</td></tr>`;
+            }
+        }
+
+        window.onload = renderNearExpiry;
+    </script>
+</body>
+</html>

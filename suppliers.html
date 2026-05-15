@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aju Store | Suppliers</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #000000; }
+        
+        .sidebar-link { transition: all 0.2s; color: #000000; font-weight: 700; padding: 14px; border-radius: 16px; display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .sidebar-link.active { background: #10b981; color: white !important; box-shadow: 0 10px 15px rgba(16,185,129,0.2); }
+
+        .supplier-card { background: white; border: 2px solid #f1f5f9; border-radius: 2rem; padding: 24px; transition: all 0.3s; }
+        .supplier-card:hover { border-color: #10b981; transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05); }
+
+        .refined-text { color: #000000 !important; font-weight: 500; }
+        .bold-text { color: #000000 !important; font-weight: 700; }
+        .head-black { color: #000000 !important; font-weight: 800; text-transform: uppercase; }
+        
+        input, select { border: 2px solid #f1f5f9 !important; }
+        input:focus { border-color: #10b981 !important; outline: none; }
+    </style>
+</head>
+<body class="flex min-h-screen">
+    <aside class="w-72 bg-white border-r p-6 flex flex-col gap-2 shrink-0">
+        <div class="flex items-center gap-3 mb-10 px-2">
+            <div class="bg-emerald-500 w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-lg"><i class="bi bi-shop"></i></div>
+            <h1 class="font-extrabold text-xl head-black">Aju Store</h1>
+        </div>
+        <nav class="flex flex-col gap-2">
+            <a href="index.html" class="sidebar-link"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <a href="expiry.html" class="sidebar-link"><i class="bi bi-calendar3"></i> All Expiry</a>
+            <a href="near-expiry.html" class="sidebar-link"><i class="bi bi-hourglass-split"></i> Near Expiry</a>
+            <a href="suppliers.html" class="sidebar-link active"><i class="bi bi-truck"></i> Suppliers</a>
+            <a href="results.html" class="sidebar-link"><i class="bi bi-file-earmark-bar-graph"></i> Results</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-8 space-y-8 overflow-y-auto">
+        <header class="flex justify-between items-center">
+            <div>
+                <h2 class="text-4xl font-black head-black">Suppliers Directory</h2>
+                <p class="text-slate-500 font-bold mt-1">Manage your supply chain partners</p>
+            </div>
+            <button onclick="openSupModal()" class="bg-emerald-500 text-white px-10 py-4 rounded-2xl font-black shadow-xl hover:bg-emerald-600 transition-all flex items-center gap-3">
+                <i class="bi bi-person-plus-fill text-xl"></i> Add Supplier
+            </button>
+        </header>
+
+        <div class="bg-white border-2 border-slate-200 px-6 py-4 rounded-3xl flex items-center gap-4 w-full max-w-2xl shadow-sm">
+            <i class="bi bi-search text-slate-400"></i>
+            <input type="text" id="supSearch" onkeyup="filterSuppliers()" placeholder="Search by name, contact or category..." class="bg-transparent w-full font-bold text-black border-none!">
+        </div>
+
+        <div id="suppliersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+    </main>
+
+    <div id="supModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md hidden flex items-center justify-center p-4 z-[999]">
+        <form id="supplierForm" class="bg-white p-10 rounded-[3rem] w-full max-w-lg shadow-2xl relative">
+            <button type="button" onclick="closeSupModal()" class="absolute top-8 right-8 text-slate-300 hover:text-red-500 text-3xl"><i class="bi bi-x-circle-fill"></i></button>
+            <h3 class="text-2xl font-black mb-8 head-black">New Supplier</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold uppercase ml-2 text-slate-400">Company Name</label>
+                    <input type="text" id="sName" class="w-full p-4 bg-slate-50 rounded-2xl font-bold" placeholder="e.g. Fresh Farms Ltd" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase ml-2 text-slate-400">Contact Person</label>
+                        <input type="text" id="sPerson" class="w-full p-4 bg-slate-50 rounded-2xl font-bold" placeholder="Full Name" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase ml-2 text-slate-400">Phone Number</label>
+                        <input type="tel" id="sPhone" class="w-full p-4 bg-slate-50 rounded-2xl font-bold" placeholder="+91..." required>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold uppercase ml-2 text-slate-400">Supply Category</label>
+                    <select id="sCat" class="w-full p-4 bg-slate-50 rounded-2xl font-bold">
+                        <option>Grocery</option>
+                        <option>Dairy</option>
+                        <option>Beverages</option>
+                        <option>Cleaning</option>
+                        <option>Snacks</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold uppercase ml-2 text-slate-400">Email Address</label>
+                    <input type="email" id="sEmail" class="w-full p-4 bg-slate-50 rounded-2xl font-bold" placeholder="contact@supplier.com">
+                </div>
+            </div>
+            
+            <button type="submit" class="w-full mt-8 py-5 bg-emerald-500 text-white rounded-2xl font-black text-xl shadow-lg hover:scale-[1.02] transition-transform">REGISTER SUPPLIER</button>
+        </form>
+    </div>
+
+    <script>
+        const SUP_KEY = 'AJU_STORES_SUPPLIERS_V1';
+        let suppliers = JSON.parse(localStorage.getItem(SUP_KEY)) || [];
+
+        // Initial Data if empty
+        function initSuppliers() {
+            if (suppliers.length === 0) {
+                suppliers = [
+                    { name: "Global Grain Co", person: "Arun Kumar", phone: "98765 43210", cat: "Grocery", email: "sales@globalgrain.com" },
+                    { name: "Milk Mist Dairy", person: "Deepa S.", phone: "99443 11223", cat: "Dairy", email: "deepa@milkmist.in" },
+                    { name: "Evergreen Beverages", person: "Robert V.", phone: "90001 88776", cat: "Beverages", email: "robert@evergreen.com" },
+                    { name: "CleanPro Solutions", person: "Manoj P.", phone: "98450 12345", cat: "Cleaning", email: "manoj@cleanpro.in" },
+                    { name: "Crunchy Treats", person: "Sara Khan", phone: "97123 45678", cat: "Snacks", email: "sara@crunchy.com" }
+                ];
+                saveSup();
+            }
+            renderSuppliers(suppliers);
+        }
+
+        function saveSup() { localStorage.setItem(SUP_KEY, JSON.stringify(suppliers)); }
+
+        function renderSuppliers(data) {
+            const grid = document.getElementById('suppliersGrid');
+            grid.innerHTML = data.map((s, idx) => `
+                <div class="supplier-card">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-2xl text-emerald-600">
+                            <i class="bi bi-buildings-fill"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-black text-white rounded-full text-[9px] font-black uppercase tracking-wider">${s.cat}</span>
+                    </div>
+                    <h3 class="text-xl font-black mb-1 head-black">${s.name}</h3>
+                    <p class="text-slate-400 font-bold text-xs mb-4 uppercase tracking-tighter">Attn: ${s.person}</p>
+                    
+                    <div class="space-y-3 border-t border-slate-50 pt-4">
+                        <div class="flex items-center gap-3 text-sm">
+                            <i class="bi bi-telephone text-emerald-500"></i>
+                            <span class="bold-text">${s.phone}</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm">
+                            <i class="bi bi-envelope text-emerald-500"></i>
+                            <span class="refined-text">${s.email}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 mt-6">
+                        <button onclick="deleteSup(${idx})" class="flex-1 py-3 bg-rose-50 text-rose-500 rounded-xl font-bold text-xs hover:bg-rose-100 transition-colors">REMOVE</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterSuppliers() {
+            const val = document.getElementById('supSearch').value.toLowerCase();
+            const filtered = suppliers.filter(s => 
+                s.name.toLowerCase().includes(val) || 
+                s.person.toLowerCase().includes(val) || 
+                s.cat.toLowerCase().includes(val)
+            );
+            renderSuppliers(filtered);
+        }
+
+        document.getElementById('supplierForm').onsubmit = (e) => {
+            e.preventDefault();
+            const newSup = {
+                name: document.getElementById('sName').value,
+                person: document.getElementById('sPerson').value,
+                phone: document.getElementById('sPhone').value,
+                cat: document.getElementById('sCat').value,
+                email: document.getElementById('sEmail').value
+            };
+            suppliers.push(newSup);
+            saveSup();
+            renderSuppliers(suppliers);
+            closeSupModal();
+            document.getElementById('supplierForm').reset();
+        };
+
+        function deleteSup(idx) {
+            if(confirm("Delete this supplier record?")) {
+                suppliers.splice(idx, 1);
+                saveSup();
+                renderSuppliers(suppliers);
+            }
+        }
+
+        function openSupModal() { document.getElementById('supModal').classList.remove('hidden'); }
+        function closeSupModal() { document.getElementById('supModal').classList.add('hidden'); }
+
+        window.onload = initSuppliers;
+    </script>
+</body>
+</html>
