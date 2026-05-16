@@ -81,8 +81,15 @@ function renderCharts() {
     window.barInst = new Chart(bCtx, {
         type: 'bar',
         data: {
-            labels: inventory.slice(0, 6).map(i => i.name),
-            datasets: [{ label: 'Stock', data: inventory.slice(0, 6).map(i => i.qty), backgroundColor: '#10b981', borderRadius: 10 }]
+           // Replace line 95 to 97 inside window.barInst = new Chart(...) with this:
+
+            labels: [...inventory].sort((a, b) => b.qty - a.qty).slice(0, 6).map(i => i.name),
+            datasets: [{ 
+                label: 'Stock', 
+                data: [...inventory].sort((a, b) => b.qty - a.qty).slice(0, 6).map(i => i.qty), 
+                backgroundColor: '#10b981', 
+                borderRadius: 10 
+            }]
         },
         options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
