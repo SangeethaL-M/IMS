@@ -2,22 +2,34 @@ const DB_NAME = 'AJU_STORES_FINAL_SYSTEM';
 let inventory = JSON.parse(localStorage.getItem(DB_NAME)) || [];
 const categories = ["Grocery", "Dairy", "Beverages", "Cleaning", "Snacks"];
 
-function init() {
-    // Generate 25 products if empty
+async function init() {
+    // 1. Check if inventory is empty in localStorage
     if (inventory.length === 0) {
-        const list = ["Basmati Rice", "Full Cream Milk", "Filter Coffee", "Hand Soap", "Cooking Oil", "Green Tea", "Salted Butter", "Cheddar Cheese", "Brown Bread", "Organic Eggs", "Table Salt", "White Sugar", "Red Lentils", "Instant Noodles", "Hair Shampoo", "Toothpaste", "Dish Brush", "Fruit Jam", "Pure Honey", "Cow Ghee", "Fresh Curd", "Mango Juice", "Diet Coke", "Potato Chips", "Choco Cookies"];
-        inventory = list.map((name, i) => ({
-            invoice: `INV-26-${200 + i}`,
-            sku: (5000 + i).toString(),
-            name: name,
-            cat: categories[i % categories.length],
-            qty: Math.floor(Math.random() * 60) + 5,
-            unit: i % 4 === 0 ? "kg" : "pcs",
-            price: Math.floor(Math.random() * 450) + 25,
-            exp: "2026-12-30"
-        }));
-        saveDB();
+        try {
+            // 2. Fetch the real product data from your json file
+            const response = await fetch('Assets/js/products.json');
+            const jsonData = await response.json();
+            
+            // 3. Map your JSON data directly into the inventory format
+            inventory = jsonData.map((item, i) => ({
+                invoice: item.invoice || `INV-26-${200 + i}`,
+                sku: item.sku || (5000 + i).toString(),
+                name: item.name,
+                cat: item.cat || item.category, // fallback in case your JSON uses 'category'
+                qty: parseInt(item.qty) || 10,
+                unit: item.unit || "pcs",
+                price: parseFloat(item.price) || 0,
+                exp: item.exp || "2026-12-30"
+            }));
+
+            // 4. Save the freshly loaded JSON products to localStorage
+            saveDB();
+        } catch (error) {
+            console.error("Error loading products.json:", error);
+        }
     }
+    
+    // 5. Render everything to the screen
     refreshUI();
 }
 
